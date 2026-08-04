@@ -36,7 +36,6 @@
 - [Exploratory Data Analysis](#exploratory-data-analysis)
 - [Modeling & Results](#modeling--results)
 - [Business Recommendations](#business-recommendations)
-- [Limitations](#limitations)
 - [Summary](#summary)
 
 ---
@@ -141,7 +140,7 @@ Average Precision (AP) = **0.760**, well above the ~0.475 class-imbalance baseli
 
 ### Confusion Matrix
 
-![Confusion Matrix](hhttps://github.com/aleksandra20050404/Customer_Subscription_Prediction/blob/main/img/outputs/confusion_matrix.png)
+![Confusion Matrix](https://github.com/aleksandra20050404/Customer_Subscription_Prediction/blob/main/img/outputs/confusion_matrix.png)
 
 | | Predicted No | Predicted Yes |
 |---|---|---|
@@ -198,14 +197,6 @@ Based on `feature_importances_` from the deployed model, the strongest predictor
 
 ---
 
-## Limitations
-
-- `preprocessor.pkl` was pickled under an older scikit-learn version and can fail to load in newer environments (`_RemainderColsList` unpickling error) — pin the scikit-learn version in `requirements.txt` to match whatever version produced the pickle, or re-save it under your target version before publishing.
-- No hyperparameter tuning was performed; all models use default or lightly-set parameters, so there's headroom left on the table for every model in the comparison.
-- `day` (day of month) is now encoded cyclically (`day_sin`/`day_cos`) rather than as a plain scaled integer — this resolved an earlier concern that its importance might be a scaling artifact; combined importance actually increased under the corrected encoding (0.166 vs. 0.123 before), so it should be treated as a genuine signal, not a caveat.
-- The six models compared here are a mix of realistic deployment candidates (Gradient Boosting, Random Forest, Logistic Regression) and reference baselines included for contrast (Naive Bayes, KNN, Decision Tree) — see the interpretation notes above before treating all six as equally viable options.
-
----
 
 ## Summary
 
