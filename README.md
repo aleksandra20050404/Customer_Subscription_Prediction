@@ -83,11 +83,11 @@ Portuguese banking institutions run direct telemarketing campaigns to promote te
 
 The dataset is close to balanced: **5,873 clients (52.6%) did not subscribe, and 5,289 clients (47.4%) did subscribe** to a term deposit. This is a meaningfully different balance from the commonly-cited "bank-marketing" dataset (which is closer to 88/12) — this particular sample (OpenML ID 43718) is far more even, which is why plain accuracy is a reasonably informative metric here, though precision/recall still matter for the business trade-offs below.
 
-*(`img/eda/target_distribution.png`)*
+![Target_Distribution](https://github.com/aleksandra20050404/Customer_Subscription_Prediction/img/outputs/img/eda/target_distribution.png)
 
 ### 2. Categorical Feature Distributions
 
-*(`img/eda/eda_categorical.png`)*
+![Categorical_Features](https://github.com/aleksandra20050404/Customer_Subscription_Prediction/img/outputs/img/eda/eda_categorical.png)
 
 - **`poutcome`**: 74.6% of clients (8,326) have `unknown` prior outcome — most clients were never part of a previous campaign. Only 9.6% (1,071) had a prior `success`.
 - **`contact`**: 72% (8,042) were contacted by cellular, vs. 21% unknown and 7% telephone.
@@ -98,7 +98,9 @@ The dataset is close to balanced: **5,873 clients (52.6%) did not subscribe, and
 
 ### 3. Numeric Features vs. Target (Box Plots)
 
-*(`img/eda/box_plots.png`)*
+
+![Numeric_Features](https://github.com/aleksandra20050404/Customer_Subscription_Prediction/img/outputs/img/eda/box_plots.png)
+
 
 - **`age`**: medians are nearly identical between subscribers (~38) and non-subscribers (~39) with heavily overlapping IQRs — little linear separation by deposit status in this view; if age matters, it's likely a non-monotonic (U-shaped) relationship a boxplot can't reveal.
 - **`balance`**: both classes are dominated by extreme right-tail outliers (up to ~€80k); medians sit close together near the low end, with the outliers visually overwhelming the box itself.
@@ -112,7 +114,7 @@ The dataset is close to balanced: **5,873 clients (52.6%) did not subscribe, and
 
 ### Model Comparison
 
-![Model Performance Comparison](img/outputs/models_summary.png)
+![Model Performance Comparison](https://github.com/aleksandra20050404/Customer_Subscription_Prediction/img/outputs/models_summary.png)
 
 | Model | Accuracy | Precision | Recall | F1-Score | ROC-AUC |
 |---|---|---|---|---|---|
@@ -127,19 +129,19 @@ The dataset is close to balanced: **5,873 clients (52.6%) did not subscribe, and
 
 ### ROC Curve
 
-![ROC Curve](img/outputs/roc_curve.png)
+![ROC Curve](https://github.com/aleksandra20050404/Customer_Subscription_Prediction/img/outputs/roc_curve.png)
 
 AUC = **0.771**, with an optimal threshold (by Youden's J statistic) of **0.480** — this matches the Random Forest row in the table above exactly, confirming the plot is now correctly tied to the deployed model (the earlier notebook revision had a variable-reuse bug that mislabeled Gradient Boosting's curve as Random Forest's — that's fixed and verified here). The curve sits well above the diagonal across the full threshold range, indicating solid separation between classes without being an exceptionally strong discriminator — there's a real but moderate signal in the features, not a near-perfect one.
 
 ### Precision-Recall Curve
 
-![Precision-Recall Curve](img/outputs/precision_recall_curve.png)
+![Precision-Recall Curve](https://github.com/aleksandra20050404/Customer_Subscription_Prediction/img/outputs/precision_recall_curve.png)
 
 Average Precision (AP) = **0.760**, well above the ~0.475 class-imbalance baseline (matching the actual "yes" proportion in the test set). Precision stays above 0.90 up to roughly 15–20% recall, then degrades in a fairly steady, gradual slope rather than a sharp cliff — meaning there isn't a single "obvious" threshold where performance falls off; the acquisition/precision trade-off is continuous, and the choice of operating threshold should be driven by the actual cost of a wasted call vs. the value of a missed subscriber, rather than a visually obvious inflection point.
 
 ### Confusion Matrix
 
-![Confusion Matrix](img/outputs/confusion_matrix.png)
+![Confusion Matrix](https://github.com/aleksandra20050404/Customer_Subscription_Prediction/img/outputs/confusion_matrix.png)
 
 | | Predicted No | Predicted Yes |
 |---|---|---|
@@ -150,7 +152,7 @@ Accuracy 71.5%, precision 73.6%, recall 62.4% — matching the Random Forest row
 
 ### Calibration Plot
 
-![Calibration Plot](img/outputs/calibration_curve.png)
+![Calibration Plot](https://github.com/aleksandra20050404/Customer_Subscription_Prediction/img/outputs/calibration_curve.png)
 
 The model is well-calibrated across most of the probability range — points track close to the diagonal from roughly 0.55 to 0.95 predicted probability. The main deviation is at the low end (predicted probabilities of 0.07–0.35), where the actual positive rate runs somewhat *higher* than predicted — i.e. the model is mildly underconfident about its lowest-scored clients, some of whom subscribe anyway more often than the raw score suggests. For a marketing use case where the probability score itself is used to rank a call list (not just a yes/no cutoff), this is close enough to trust directly in the mid-to-high range, with a note of caution about taking very low scores as precisely as their numeric value implies.
 
